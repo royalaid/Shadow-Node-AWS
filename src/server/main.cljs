@@ -5,9 +5,10 @@
 
 (defonce value-b 2)
 
-(defn handler []
-  #js{:statusCode 200
-      :body (js/JSON.stringify "Hello from Shadow")})
+(defn handler [_ _ cb]
+  (cb nil
+      #js {:statusCode 200
+           :body (js/JSON.stringify "Hello from Shadow")}))
 
 (defn reload! []
   (println "Code updated.")
