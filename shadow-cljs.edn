@@ -1,7 +1,8 @@
-
 {:source-paths ["src"]
  :dependencies []
- :builds {:app {:target :node-script
+ :builds {:app {:target :node-library
+                :exports {:handler server.main/handler}
+                :output-dir "target"
                 :output-to "target/main.js"
                 :main server.main/main!
                 :devtools {:after-load server.main/reload!}}}}
