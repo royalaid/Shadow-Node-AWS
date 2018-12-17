@@ -1,5 +1,14 @@
 (ns server.main
-  (:require ["aws-sdk" :as AWS]))
+  (:require ["aws-sdk" :as AWS]
+            [server.atomic-inc :as ai]
+            [server.create-item :as ci]
+            [server.create-table :as ct]
+            [server.delete-item :as di]
+            [server.delete-table :as dt]
+            [server.read-item :as ri]
+            [server.update-item :as ui]
+            [server.update-item-conditionally :as uic]
+            ))
 
 (AWS/config.update #js{:region "us-east-1"})
 
@@ -8,25 +17,17 @@
 (def params (clj->js {:TableName "increamental-clicker-counts"
                       :Key {"user-id" {:S "0"}}}))
 
-(def intro #js{#_#_:dynamo dynamo
-               :res (fn []
-                      (.getItem dynamo params
-                                (fn [e d]
-                                  (println d))))})
-
-
-(println "Start")
-(.getItem dynamo params
-          (fn [e d]
-            (println "DONE!")
-            (def err (or e "nothing"))
-            (def data d)))
-(println "Done")
-
-(println "Yo Foo")
-(js/console.log "CC")
-
-(defn handler [_ _ cb]
-  (cb nil
-      #js {:statusCode 200
-           :body (js/JSON.stringify "Hello from Shadow")}))
+(def intro #js{:getItem (fn []
+                          (.getItem dynamo params
+                                    (fn [e d]
+                                      (println "DONE!")
+                                      (def err (or e "nothing"))
+                                      (def data d))))
+               :createTable (fn [] (ct/invoke))
+               :createItem (fn [] (ci/invoke))
+               :readItem (fn [] (ri/invoke))
+               :deleteTable (fn [] (dt/invoke))
+               :deleteItem (fn [] (di/invoke))
+               :updateItem (fn [] (ui/invoke))
+               :updateItemConditionally (fn [] (uic/invoke))
+               :atomicInc (fn [] (ai/invoke))})

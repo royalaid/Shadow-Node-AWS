@@ -1,7 +1,6 @@
 {:source-paths ["src"]
  :dependencies []
  :builds {:app {:target :node-library
-                :exports {:handler server.main/handler
-                          :introspect server.main/intro}
+                :exports {:aws server.main/intro}
                 :output-dir "target"
                 :output-to "target/main.js"}}}
